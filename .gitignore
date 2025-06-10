@@ -1,0 +1,45 @@
+# Build outputs
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+# Dependencies
+**/node_modules/
+**/package-lock.json
+
+# IDE and OS files
+.DS_Store
+.vscode/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Cache and temp files
+**/.cache/
+**/tmp/
+**/temp/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database
+*.db
+*.sqlite
+
+# Build artifacts
+**/dist/
+**/build/
+
+# Secrets and configuration
+appsettings.Development.json
+appsettings.local.json 

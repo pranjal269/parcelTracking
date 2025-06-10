@@ -1,0 +1,237 @@
+/* Auth Container */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  transition: transform 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Auth Header */
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h2 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.auth-header p {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Auth Form */
+.auth-form {
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #bdc3c7;
+  font-size: 0.9rem;
+}
+
+/* Auth Buttons */
+.auth-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.auth-button:hover {
+  background: linear-gradient(135deg, #2980b9, #21618c);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.auth-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.auth-button.admin-button {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.auth-button.admin-button:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Auth Footer */
+.auth-footer {
+  text-align: center;
+  border-top: 1px solid #ecf0f1;
+  padding-top: 20px;
+}
+
+.auth-footer p {
+  margin: 10px 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.auth-link {
+  color: #3498db;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+  color: #2980b9;
+}
+
+/* Error Messages */
+.error-message {
+  background: #e74c3c;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  border-left: 4px solid #c0392b;
+}
+
+/* Success Messages */
+.success-message {
+  background: #27ae60;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  border-left: 4px solid #229954;
+}
+
+/* Compact form for registration */
+.auth-form .form-group:last-of-type {
+  margin-bottom: 15px;
+}
+
+/* Better scrolling for long forms */
+.auth-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 10px;
+  }
+  
+  .auth-card {
+    padding: 30px 20px;
+    max-width: 100%;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .form-group input {
+    padding: 10px 12px;
+  }
+  
+  .auth-button {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-height: 700px) {
+  .auth-card {
+    max-height: 85vh;
+    padding: 25px;
+  }
+  
+  .auth-header {
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+} 
