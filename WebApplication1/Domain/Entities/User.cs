@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Domain.Entities
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {
         [Key]
