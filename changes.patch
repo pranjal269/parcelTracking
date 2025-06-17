@@ -1,0 +1,1957 @@
+diff --git a/README.md b/README.md
+index a7d0e06..2c82b1f 100644
+--- a/README.md
++++ b/README.md
+@@ -11,6 +11,13 @@ A comprehensive parcel tracking and management system built with .NET Core and R
+ - **Visual Indicators** - Color-coded UI showing tamper status and delivery concerns
+ - **Statistics Dashboard** - Real-time tamper rate monitoring and analytics
+ 
++### 📱 **NEW: Enhanced OTP Verification System**
++- **Recipient Phone Verification** - OTP sent directly to recipient's phone number
++- **Secure Handler Interface** - OTPs are never displayed to handlers for enhanced security
++- **Universal Verification** - All deliveries, including tampered packages, require OTP verification
++- **SMS Integration** - Real-time OTP delivery via SMS using Twilio
++- **Audit Trail** - Complete tracking of OTP generation and verification events
++
+ ### 🎯 Core Functionality
+ - **Real-time Parcel Tracking** - Track shipments with unique tracking IDs
+ - **QR Code Generation** - Auto-generated QR codes for each shipment
+@@ -31,6 +38,8 @@ A comprehensive parcel tracking and management system built with .NET Core and R
+ - Deliver tampered packages with proper documentation
+ - Access tamper detection statistics and reports
+ - Force deliver packages in emergency situations
++- Generate and verify OTPs for secure package delivery
++- Secure delivery process with recipient-only OTP verification
+ 
+ #### **Admins**
+ - Full system oversight and user management
+@@ -162,13 +171,18 @@ Configure email settings for notifications:
+ - `POST /api/shipment` - Create new shipment
+ - `GET /api/shipment/tracking/{trackingId}` - Track shipment
+ - `POST /api/shipment/otp/{shipmentId}` - Generate delivery OTP
++- `GET /api/shipment/otp/list` - List delivery OTPs (admin/debugging)
++
++### **NEW: OTP Verification Endpoints**
++- `POST /api/handler/shipments/{id}/generate-otp` - Generate OTP for recipient verification
++- `POST /api/handler/shipments/{id}/verify-otp` - Verify OTP and mark as delivered
++- `PUT /api/handler/shipments/{id}/force-deliver` - Force deliver with OTP verification
+ 
+ ### **NEW: Tamper Detection Endpoints**
+ - `GET /api/handler/statistics` - Get tamper detection statistics
+ - `GET /api/handler/shipments/tampered` - Get only tampered shipments
+ - `PUT /api/handler/shipments/{id}/status` - Update status with tamper validation
+ - `PUT /api/handler/shipments/{id}/deliver` - Smart delivery (handles tampered packages)
+-- `PUT /api/handler/shipments/{id}/force-deliver` - Force deliver tampered packages
+ - `POST /api/handler/shipments/{id}/mark-tampered` - Manually mark as tampered
+ - `GET /api/handler/workflow-steps` - Get valid workflow steps
+ 
+@@ -197,6 +211,26 @@ Pending → Picked Up → In Transit → Out for Delivery → Delivered
+ - **`Delivered_Tampered`** - Package delivered despite tampering concerns
+ - **Visual Indicators** - Orange badges for tampered deliveries
+ 
++## 📱 OTP Verification System
++
++### Security Features
++1. **Recipient-Only OTP** - OTPs are sent directly to the recipient's phone number
++2. **Handler Privacy** - OTPs are never displayed to handlers for enhanced security
++3. **Universal Verification** - All deliveries, including tampered packages, require OTP verification
++4. **SMS Integration** - Real-time OTP delivery via Twilio SMS service
++5. **Audit Trail** - Complete tracking of OTP generation and verification events
++
++### OTP Workflow
++```
++Generate OTP → Send to Recipient → Recipient Provides OTP to Handler → Handler Verifies → Package Delivered
++```
++
++### Enhanced Security
++- **Tampered Package Protection** - Even tampered packages require OTP verification
++- **Delivery Confirmation** - Ensures the right person receives the package
++- **Secure Communication** - Direct SMS to recipient bypasses handler involvement
++- **Verification Tracking** - Complete record of OTP generation and verification
++
+ ## 📊 Dashboard Features
+ 
+ ### Handler Dashboard
+@@ -205,12 +239,14 @@ Pending → Picked Up → In Transit → Out for Delivery → Delivered
+ - **Workflow Guidance** - Visual workflow steps with violation warnings
+ - **Smart Actions** - Context-aware buttons for tampered packages
+ - **Force Delivery** - Emergency delivery options with confirmations
++- **OTP Management** - Generate and verify OTPs for secure delivery
+ 
+ ### Admin Dashboard  
+ - **System Analytics** - Comprehensive tamper rate analytics
+ - **User Management** - Role-based access control
+ - **Audit Trails** - Complete tamper event logging
+ - **Performance Metrics** - Delivery efficiency and quality metrics
++- **OTP Monitoring** - Track OTP generation and verification events
+ 
+ ## 🎯 Business Impact
+ 
+@@ -220,12 +256,15 @@ Pending → Picked Up → In Transit → Out for Delivery → Delivered
+ - **Risk Management** - Clear documentation for liability protection
+ - **Quality Control** - Separate tracking of delivery concerns
+ - **Handler Efficiency** - Clear options for problem packages
++- **Delivery Confirmation** - Ensures packages are delivered to intended recipients
+ 
+ ### Security Features
+ - **Immutable Records** - Tamper events cannot be deleted
+ - **Handler Attribution** - Complete accountability chain
+ - **Workflow Enforcement** - Prevents unauthorized status changes
+ - **Emergency Override** - Controlled violation of business rules
++- **Recipient Verification** - OTP verification prevents delivery to wrong recipients
++- **Secure Communication** - OTPs sent directly to recipient phones
+ 
+ ## 🤝 Contributing
+ 
+@@ -242,7 +281,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
+ ## 🙏 Acknowledgments
+ 
+ - Built with ❤️ using modern web technologies
+-- Enterprise-grade tamper detection system
++- Enterprise-grade tamper detection and OTP verification systems
+ - Inspired by modern logistics and security solutions
+ - Icons and UI elements from various open-source projects
+ 
+@@ -252,6 +291,13 @@ For support and questions, please open an issue in the GitHub repository.
+ 
+ ## 🚀 Recent Updates
+ 
++### v2.1 - Enhanced OTP Verification System
++- ✅ **Recipient Phone Verification** - OTP sent directly to recipient's phone number
++- ✅ **Secure Handler Interface** - OTPs are never displayed to handlers
++- ✅ **Universal Verification** - All deliveries, including tampered packages, require OTP verification
++- ✅ **SMS Integration** - Real-time OTP delivery via Twilio
++- ✅ **Audit Trail** - Complete tracking of OTP generation and verification events
++
+ ### v2.0 - Tamper Detection System
+ - ✅ **Enterprise Tamper Detection** - Automatic workflow violation detection
+ - ✅ **Tampered Delivery Support** - Deliver packages despite tampering concerns  
+@@ -259,8 +305,7 @@ For support and questions, please open an issue in the GitHub repository.
+ - ✅ **Visual Indicators** - Color-coded tamper status system
+ - ✅ **Complete Audit Trail** - Full traceability and compliance
+ - ✅ **Force Delivery Options** - Emergency delivery capabilities
+-- ✅ **Enhanced Security** - Handler attribution and accountability
+ 
+ ---
+ 
+-**🎉 Ready for Enterprise Deployment with Advanced Security Features!**
++**🎉 Ready for Enterprise Deployment with Advanced Security Features!**
+\ No newline at end of file
+diff --git a/WebApplication1/Api/Controllers/HandlerController.cs b/WebApplication1/Api/Controllers/HandlerController.cs
+index a51c453..87d43e8 100644
+--- a/WebApplication1/Api/Controllers/HandlerController.cs
++++ b/WebApplication1/Api/Controllers/HandlerController.cs
+@@ -164,7 +164,7 @@ namespace WebApplication1.Api.Controllers
+             {
+                 shipment.CurrentAddress = request.CurrentAddress;
+             }
+-            
++
+             await _context.SaveChangesAsync();
+ 
+             return Ok(new { message = "Shipment status updated successfully", shipment });
+@@ -202,6 +202,21 @@ namespace WebApplication1.Api.Controllers
+         [HttpPut("shipments/{id}/force-deliver")]
+         public async Task<IActionResult> ForceDeliverTamperedPackage(int id, [FromBody] DeliveryConfirmation confirmation)
+         {
++            // First verify that a valid OTP was provided
++            if (string.IsNullOrEmpty(confirmation.Otp))
++            {
++                return BadRequest(new { message = "OTP is required for delivery verification, even for tampered packages" });
++            }
++            
++            // Verify the OTP
++            var otp = await _context.DeliveryOtps
++                .FirstOrDefaultAsync(o => o.ShipmentId == id && o.Otp == confirmation.Otp && !o.IsUsed);
++                
++            if (otp == null)
++            {
++                return BadRequest(new { message = "Invalid or already used OTP. Verification required even for tampered packages." });
++            }
++            
+             var shipment = await _context.Shipments.FindAsync(id);
+             if (shipment == null)
+             {
+@@ -229,11 +244,14 @@ namespace WebApplication1.Api.Controllers
+             {
+                 shipment.CurrentAddress = confirmation.DeliveryAddress;
+             }
++            
++            // Mark the OTP as used
++            otp.IsUsed = true;
+ 
+             await _context.SaveChangesAsync();
+ 
+             return Ok(new { 
+-                message = "Package force-delivered as tampered", 
++                message = "Package force-delivered as tampered after OTP verification", 
+                 shipment,
+                 warning = "This shipment was delivered despite tampering concerns. Recipient will be notified."
+             });
+@@ -369,6 +387,147 @@ namespace WebApplication1.Api.Controllers
+ 
+             return Ok(shipments);
+         }
++        
++        // Handler OTP generation endpoint
++        [HttpPost("shipments/{id}/generate-otp")]
++        public async Task<IActionResult> GenerateDeliveryOtp(int id)
++        {
++            var shipment = await _context.Shipments.FindAsync(id);
++            if (shipment == null)
++            {
++                return NotFound("Shipment not found.");
++            }
++
++            // Get user details for SMS
++            var user = await _context.Users.FindAsync(shipment.UserId);
++            if (user == null)
++            {
++                return NotFound("User not found.");
++            }
++
++            // Generate OTP
++            var trackingService = HttpContext.RequestServices.GetRequiredService<WebApplication1.Application.Services.ITrackingService>();
++            var smsService = HttpContext.RequestServices.GetRequiredService<WebApplication1.Application.Services.ISmsService>();
++            
++            // Generate a new OTP
++            string otpCode = trackingService.GenerateOtp();
++            
++            // Save OTP to database
++            var otp = new DeliveryOtp
++            {
++                Otp = otpCode,
++                ShipmentId = id
++            };
++
++            _context.DeliveryOtps.Add(otp);
++            await _context.SaveChangesAsync();
++
++            // Log detailed information about the shipment
++            Console.WriteLine($"Shipment ID: {shipment.Id}");
++            Console.WriteLine($"Recipient Name: {shipment.RecipientName}");
++            Console.WriteLine($"Recipient Phone: {shipment.RecipientPhoneNumber}");
++            Console.WriteLine($"Sender Email: {shipment.UserEmail}");
++            Console.WriteLine($"Sender Phone: {user.PhoneNumber}");
++
++            // Try to send OTP via SMS to the recipient
++            try
++            {
++                // First try to use recipient's phone number, fall back to sender's only if necessary
++                string phoneNumber = !string.IsNullOrEmpty(shipment.RecipientPhoneNumber) 
++                    ? shipment.RecipientPhoneNumber 
++                    : user.PhoneNumber;
++                    
++                if (!string.IsNullOrEmpty(phoneNumber))
++                {
++                    string smsMessage = $"Your delivery OTP for parcel {shipment.TrackingId} is: {otpCode}. Use this to confirm delivery.";
++                    await smsService.SendSmsAsync(phoneNumber, smsMessage);
++                    
++                    // Update shipment status to Out for Delivery
++                    if (shipment.Status != "Out for Delivery")
++                    {
++                        shipment.Status = "Out for Delivery";
++                        shipment.OutForDeliveryAt = DateTime.UtcNow;
++                        shipment.StatusHistory = _tamperDetectionService.UpdateStatusHistory(shipment.StatusHistory, "Out for Delivery");
++                        await _context.SaveChangesAsync();
++                    }
++                    
++                    return Ok(new { 
++                        message = "OTP generated and sent successfully to recipient's phone", 
++                        recipientPhone = shipment.RecipientPhoneNumber
++                        // OTP is no longer included in the response
++                    });
++                }
++                else
++                {
++                    return BadRequest(new {
++                        message = "No recipient phone number available for sending OTP. Please update the shipment with a valid recipient phone number.",
++                        recipientPhone = shipment.RecipientPhoneNumber,
++                        senderPhone = user.PhoneNumber
++                    });
++                }
++            }
++            catch (Exception ex)
++            {
++                // Log the SMS error
++                Console.WriteLine($"SMS notification failed for OTP {otpCode}: {ex.Message}");
++                return StatusCode(500, new { 
++                    message = "Failed to send OTP via SMS", 
++                    error = ex.Message,
++                    recipientPhone = shipment.RecipientPhoneNumber
++                    // OTP is no longer included in the response
++                });
++            }
++        }
++        
++        // Handler OTP verification endpoint
++        [HttpPost("shipments/{id}/verify-otp")]
++        public async Task<IActionResult> VerifyDeliveryOtp(int id, [FromBody] HandlerOtpVerificationRequest request)
++        {
++            var otp = await _context.DeliveryOtps
++                .FirstOrDefaultAsync(o => o.ShipmentId == id && o.Otp == request.Otp && !o.IsUsed);
++
++            if (otp == null)
++            {
++                return BadRequest("Invalid or already used OTP.");
++            }
++
++            var shipment = await _context.Shipments.FindAsync(id);
++            if (shipment == null)
++            {
++                return NotFound("Shipment not found.");
++            }
++
++            // Mark OTP as used
++            otp.IsUsed = true;
++            
++            // Check if this is a tampered package
++            if (shipment.IsTampered)
++            {
++                // Update shipment status to Delivered_Tampered for tampered packages
++                shipment.Status = "Delivered_Tampered";
++                shipment.StatusHistory = _tamperDetectionService.UpdateStatusHistory(shipment.StatusHistory, "Delivered_Tampered");
++                shipment.DeliveredAt = DateTime.UtcNow;
++                shipment.WasDeliveredWithTamper = true;
++                
++                await _context.SaveChangesAsync();
++                
++                return Ok(new { 
++                    message = "OTP verified successfully. Tampered shipment marked as delivered.",
++                    warning = "This shipment was delivered despite tampering concerns. Recipient will be notified."
++                });
++            }
++            else
++            {
++                // Update shipment status to Delivered for normal packages
++                shipment.Status = "Delivered";
++                shipment.StatusHistory = _tamperDetectionService.UpdateStatusHistory(shipment.StatusHistory, "Delivered");
++                shipment.DeliveredAt = DateTime.UtcNow;
++                
++                await _context.SaveChangesAsync();
++                
++                return Ok(new { message = "OTP verified successfully. Shipment marked as delivered." });
++            }
++        }
+     }
+ 
+     public class HandlerLoginRequest
+@@ -389,6 +548,7 @@ namespace WebApplication1.Api.Controllers
+         public string? DeliveryAddress { get; set; }
+         public string? Notes { get; set; }
+         public string? HandlerEmail { get; set; }
++        public string? Otp { get; set; }
+     }
+ 
+     public class TamperReportRequest
+@@ -396,4 +556,10 @@ namespace WebApplication1.Api.Controllers
+         public string Reason { get; set; } = string.Empty;
+         public string? HandlerEmail { get; set; }
+     }
++    
++    public class HandlerOtpVerificationRequest
++    {
++        public string Otp { get; set; } = string.Empty;
++        public string? HandlerEmail { get; set; }
++    }
+ } 
+\ No newline at end of file
+diff --git a/WebApplication1/Api/Controllers/LoginController.cs b/WebApplication1/Api/Controllers/LoginController.cs
+index 1996e8e..6e1b1b9 100644
+--- a/WebApplication1/Api/Controllers/LoginController.cs
++++ b/WebApplication1/Api/Controllers/LoginController.cs
+@@ -1,4 +1,4 @@
+-﻿using Microsoft.AspNetCore.Mvc;
++﻿    using Microsoft.AspNetCore.Mvc;
+ using Microsoft.EntityFrameworkCore;
+ using WebApplication1.Infrastructure.Persistence;
+ using WebApplication1.Domain.Entities;
+diff --git a/WebApplication1/Api/Controllers/ShipmentController.cs b/WebApplication1/Api/Controllers/ShipmentController.cs
+index d1bbf6c..4bf4431 100644
+--- a/WebApplication1/Api/Controllers/ShipmentController.cs
++++ b/WebApplication1/Api/Controllers/ShipmentController.cs
+@@ -90,6 +90,16 @@ namespace WebApplication1.Api.Controllers
+         [HttpPost]
+         public async Task<ActionResult<Shipment>> CreateShipment(Shipment shipment)
+         {
++            // Debug logging for incoming data
++            Console.WriteLine("=== SHIPMENT CREATE DEBUG ===");
++            Console.WriteLine($"RecipientName: {shipment.RecipientName}");
++            Console.WriteLine($"RecipientPhoneNumber: {shipment.RecipientPhoneNumber}");
++            Console.WriteLine($"DeliveryAddress: {shipment.DeliveryAddress}");
++            Console.WriteLine($"PackageType: {shipment.PackageType}");
++            Console.WriteLine($"Weight: {shipment.Weight}");
++            Console.WriteLine($"UserId: {shipment.UserId}");
++            Console.WriteLine("=== END DEBUG ===");
++            
+             // Verify user exists
+             var user = await _context.Users.FindAsync(shipment.UserId);
+             if (user == null)
+@@ -108,6 +118,9 @@ namespace WebApplication1.Api.Controllers
+             // Set user email from the user
+             shipment.UserEmail = user.Email;
+             
++            // Log the recipient phone number
++            Console.WriteLine($"Creating shipment with recipient phone number: {shipment.RecipientPhoneNumber}");
++            
+             // Explicitly detach the User property to avoid validation errors
+             shipment.User = null;
+             
+@@ -126,6 +139,7 @@ namespace WebApplication1.Api.Controllers
+                         <p>Your parcel has been successfully registered in our system.</p>
+                         <p><strong>Tracking ID:</strong> {shipment.TrackingId}</p>
+                         <p><strong>Recipient:</strong> {shipment.RecipientName}</p>
++                        <p><strong>Recipient Phone:</strong> {shipment.RecipientPhoneNumber}</p>
+                         <p><strong>Delivery Address:</strong> {shipment.DeliveryAddress}</p>
+                         <p>You can track your parcel status using the tracking ID above.</p>
+                         <p>Thank you for using our service!</p>
+@@ -252,7 +266,7 @@ namespace WebApplication1.Api.Controllers
+                 return NotFound("User not found.");
+             }
+ 
+-            Console.WriteLine($"Creating OTP for shipment {shipmentId}, user email: {user.Email}, phone: {user.PhoneNumber}");
++            Console.WriteLine($"Creating OTP for shipment {shipmentId}, user email: {user.Email}, recipient phone: {shipment.RecipientPhoneNumber}, user phone: {user.PhoneNumber}");
+ 
+             // Generate OTP
+             var otp = new DeliveryOtp
+@@ -293,16 +307,21 @@ namespace WebApplication1.Api.Controllers
+             // Try to send OTP via SMS if phone number exists - don't fail if SMS service is down
+             try
+             {
+-                if (!string.IsNullOrEmpty(user.PhoneNumber))
++                // First try to use recipient's phone number, fall back to sender's only if necessary
++                string phoneNumber = !string.IsNullOrEmpty(shipment.RecipientPhoneNumber) 
++                    ? shipment.RecipientPhoneNumber 
++                    : user.PhoneNumber;
++                    
++                if (!string.IsNullOrEmpty(phoneNumber))
+                 {
+-                    Console.WriteLine($"Attempting to send SMS to: {user.PhoneNumber}");
++                    Console.WriteLine($"Attempting to send SMS to: {phoneNumber}");
+                     string smsMessage = $"Your delivery OTP for parcel {shipment.TrackingId} is: {otp.Otp}. Use this to confirm delivery.";
+-                    await _smsService.SendSmsAsync(user.PhoneNumber, smsMessage);
++                    await _smsService.SendSmsAsync(phoneNumber, smsMessage);
+                     Console.WriteLine("SMS sent successfully");
+                 }
+                 else
+                 {
+-                    Console.WriteLine("No phone number found for user, skipping SMS");
++                    Console.WriteLine("No phone number found for recipient or user, skipping SMS");
+                 }
+             }
+             catch (Exception ex)
+@@ -336,6 +355,43 @@ namespace WebApplication1.Api.Controllers
+             return Ok("OTP verified successfully.");
+         }
+ 
++        // POST: api/Shipment/debug
++        [HttpPost("debug")]
++        public ActionResult<object> DebugShipmentBinding([FromBody] object data)
++        {
++            Console.WriteLine("=== DEBUG BINDING ===");
++            Console.WriteLine($"Raw data: {data}");
++            Console.WriteLine("=== END DEBUG BINDING ===");
++            
++            return Ok(new { 
++                message = "Debug binding received", 
++                data = data
++            });
++        }
++
++        // GET: api/Shipment/otp/list
++        [HttpGet("otp/list")]
++        public async Task<ActionResult<IEnumerable<object>>> GetDeliveryOtps()
++        {
++            var otps = await _context.DeliveryOtps
++                .Select(o => new {
++                    o.Id,
++                    o.ShipmentId,
++                    o.IsUsed,
++                    Shipment = new {
++                        TrackingId = o.Shipment.TrackingId,
++                        RecipientName = o.Shipment.RecipientName,
++                        RecipientPhoneNumber = o.Shipment.RecipientPhoneNumber,
++                        Status = o.Shipment.Status
++                    },
++                    CreatedAt = o.Id // Since we don't have CreatedAt field, using Id as a proxy
++                })
++                .OrderByDescending(o => o.Id)
++                .Take(20)
++                .ToListAsync();
++
++            return Ok(otps);
++        }
+ 
+         private bool ShipmentExists(int id)
+         {
+diff --git a/WebApplication1/Domain/Entities/Shipment.cs b/WebApplication1/Domain/Entities/Shipment.cs
+index c6515fd..bde13fb 100644
+--- a/WebApplication1/Domain/Entities/Shipment.cs
++++ b/WebApplication1/Domain/Entities/Shipment.cs
+@@ -19,6 +19,10 @@ namespace WebApplication1.Domain.Entities
+         // New field to track current location
+         public string CurrentAddress { get; set; } = string.Empty;
+ 
++        // Recipient phone number for OTP delivery
++        [Required]
++        public string RecipientPhoneNumber { get; set; } = string.Empty;
++
+         public string PackageType { get; set; } = string.Empty;
+ 
+         [Range(0.01, 1000)]
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs b/WebApplication1/Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs
+index 8fb70f5..8b03a0c 100644
+--- a/WebApplication1/Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs
+@@ -62,10 +62,22 @@ namespace WebApplication1.Infrastructure.Persistence.Migrations
+                         .IsRequired()
+                         .HasColumnType("text");
+ 
++                    b.Property<DateTime?>("DeliveredAt")
++                        .HasColumnType("timestamp with time zone");
++
+                     b.Property<string>("DeliveryAddress")
+                         .IsRequired()
+                         .HasColumnType("text");
+ 
++                    b.Property<DateTime?>("InTransitAt")
++                        .HasColumnType("timestamp with time zone");
++
++                    b.Property<bool>("IsTampered")
++                        .HasColumnType("boolean");
++
++                    b.Property<DateTime?>("OutForDeliveryAt")
++                        .HasColumnType("timestamp with time zone");
++
+                     b.Property<string>("PackageType")
+                         .IsRequired()
+                         .HasColumnType("text");
+@@ -74,6 +86,9 @@ namespace WebApplication1.Infrastructure.Persistence.Migrations
+                         .IsRequired()
+                         .HasColumnType("text");
+ 
++                    b.Property<DateTime?>("PickedUpAt")
++                        .HasColumnType("timestamp with time zone");
++
+                     b.Property<string>("QRCodeImage")
+                         .HasColumnType("text");
+ 
+@@ -81,6 +96,10 @@ namespace WebApplication1.Infrastructure.Persistence.Migrations
+                         .IsRequired()
+                         .HasColumnType("text");
+ 
++                    b.Property<string>("RecipientPhoneNumber")
++                        .IsRequired()
++                        .HasColumnType("text");
++
+                     b.Property<string>("SpecialInstructions")
+                         .IsRequired()
+                         .HasColumnType("text");
+@@ -89,6 +108,19 @@ namespace WebApplication1.Infrastructure.Persistence.Migrations
+                         .IsRequired()
+                         .HasColumnType("text");
+ 
++                    b.Property<string>("StatusHistory")
++                        .IsRequired()
++                        .HasColumnType("text");
++
++                    b.Property<DateTime?>("TamperDetectedAt")
++                        .HasColumnType("timestamp with time zone");
++
++                    b.Property<string>("TamperDetectedBy")
++                        .HasColumnType("text");
++
++                    b.Property<string>("TamperReason")
++                        .HasColumnType("text");
++
+                     b.Property<string>("TrackingId")
+                         .IsRequired()
+                         .HasColumnType("text");
+@@ -100,6 +132,9 @@ namespace WebApplication1.Infrastructure.Persistence.Migrations
+                     b.Property<int>("UserId")
+                         .HasColumnType("integer");
+ 
++                    b.Property<bool>("WasDeliveredWithTamper")
++                        .HasColumnType("boolean");
++
+                     b.Property<decimal>("Weight")
+                         .HasColumnType("numeric");
+ 
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.Designer.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.Designer.cs
+new file mode 100644
+index 0000000..2c2feab
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.Designer.cs
+@@ -0,0 +1,31 @@
++// <auto-generated />
++using System;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore.Infrastructure;
++using Microsoft.EntityFrameworkCore.Migrations;
++using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
++using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
++using WebApplication1.Infrastructure.Persistence;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    [DbContext(typeof(ApplicationDbContext))]
++    [Migration("20250601000000_AddRecipientPhoneNumber")]
++    partial class V10_AddRecipientPhoneNumber
++    {
++        /// <inheritdoc />
++        protected override void BuildTargetModel(ModelBuilder modelBuilder)
++        {
++#pragma warning disable 612, 618
++            modelBuilder
++                .HasAnnotation("ProductVersion", "9.0.5")
++                .HasAnnotation("Relational:MaxIdentifierLength", 63);
++
++            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
++            
++            // The rest of the model is not needed for the migration designer file
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.cs
+new file mode 100644
+index 0000000..880131e
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V10_AddRecipientPhoneNumber.cs
+@@ -0,0 +1,28 @@
++using Microsoft.EntityFrameworkCore.Migrations;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    /// <inheritdoc />
++    public partial class V10_AddRecipientPhoneNumber : Migration
++    {
++        /// <inheritdoc />
++        protected override void Up(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.AddColumn<string>(
++                name: "RecipientPhoneNumber",
++                table: "Shipments",
++                type: "text",
++                nullable: true);
++        }
++
++        /// <inheritdoc />
++        protected override void Down(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.DropColumn(
++                name: "RecipientPhoneNumber",
++                table: "Shipments");
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.Designer.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.Designer.cs
+new file mode 100644
+index 0000000..27c807b
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.Designer.cs
+@@ -0,0 +1,31 @@
++// <auto-generated />
++using System;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore.Infrastructure;
++using Microsoft.EntityFrameworkCore.Migrations;
++using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
++using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
++using WebApplication1.Infrastructure.Persistence;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    [DbContext(typeof(ApplicationDbContext))]
++    [Migration("20250601000001_RemoveUserOtpGeneration")]
++    partial class V11_RemoveUserOtpGeneration
++    {
++        /// <inheritdoc />
++        protected override void BuildTargetModel(ModelBuilder modelBuilder)
++        {
++#pragma warning disable 612, 618
++            modelBuilder
++                .HasAnnotation("ProductVersion", "9.0.5")
++                .HasAnnotation("Relational:MaxIdentifierLength", 63);
++
++            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
++            
++            // The rest of the model is not needed for the migration designer file
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.cs
+new file mode 100644
+index 0000000..7405a3e
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V11_RemoveUserOtpGeneration.cs
+@@ -0,0 +1,27 @@
++using Microsoft.EntityFrameworkCore.Migrations;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    /// <inheritdoc />
++    public partial class V11_RemoveUserOtpGeneration : Migration
++    {
++        /// <inheritdoc />
++        protected override void Up(MigrationBuilder migrationBuilder)
++        {
++            // Clear all existing OTPs as we're changing the workflow
++            migrationBuilder.Sql("DELETE FROM \"DeliveryOtps\"");
++            
++            // Add a database constraint to add validation
++            migrationBuilder.Sql("ALTER TABLE \"DeliveryOtps\" ADD CONSTRAINT \"CK_DeliveryOtps_Otp_Length\" CHECK (length(\"Otp\") = 6)");
++        }
++
++        /// <inheritdoc />
++        protected override void Down(MigrationBuilder migrationBuilder)
++        {
++            // Remove the constraint
++            migrationBuilder.Sql("ALTER TABLE \"DeliveryOtps\" DROP CONSTRAINT IF EXISTS \"CK_DeliveryOtps_Otp_Length\"");
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.Designer.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.Designer.cs
+new file mode 100644
+index 0000000..8b72bab
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.Designer.cs
+@@ -0,0 +1,31 @@
++// <auto-generated />
++using System;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore.Infrastructure;
++using Microsoft.EntityFrameworkCore.Migrations;
++using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
++using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
++using WebApplication1.Infrastructure.Persistence;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    [DbContext(typeof(ApplicationDbContext))]
++    [Migration("20250602000001_FixRecipientPhoneNumber")]
++    partial class V12_FixRecipientPhoneNumber
++    {
++        /// <inheritdoc />
++        protected override void BuildTargetModel(ModelBuilder modelBuilder)
++        {
++#pragma warning disable 612, 618
++            modelBuilder
++                .HasAnnotation("ProductVersion", "9.0.5")
++                .HasAnnotation("Relational:MaxIdentifierLength", 63);
++
++            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
++            
++            // The rest of the model is not needed for the migration designer file
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.cs b/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.cs
+new file mode 100644
+index 0000000..2625559
+--- /dev/null
++++ b/WebApplication1/Infrastructure/Persistence/Migrations/V12_FixRecipientPhoneNumber.cs
+@@ -0,0 +1,52 @@
++using Microsoft.EntityFrameworkCore.Migrations;
++
++#nullable disable
++
++namespace WebApplication1.Infrastructure.Persistence.Migrations
++{
++    /// <inheritdoc />
++    public partial class V12_FixRecipientPhoneNumber : Migration
++    {
++        /// <inheritdoc />
++        protected override void Up(MigrationBuilder migrationBuilder)
++        {
++            // First check if the column exists
++            migrationBuilder.Sql(@"
++                DO $$
++                BEGIN
++                    IF NOT EXISTS (
++                        SELECT 1
++                        FROM information_schema.columns
++                        WHERE table_name = 'Shipments' AND column_name = 'RecipientPhoneNumber'
++                    ) THEN
++                        ALTER TABLE ""Shipments"" ADD COLUMN ""RecipientPhoneNumber"" TEXT;
++                    END IF;
++                END $$;
++            ");
++            
++            // Make sure the column is not nullable
++            migrationBuilder.AlterColumn<string>(
++                name: "RecipientPhoneNumber",
++                table: "Shipments",
++                type: "text",
++                nullable: false,
++                defaultValue: "",
++                oldClrType: typeof(string),
++                oldType: "text",
++                oldNullable: true);
++        }
++
++        /// <inheritdoc />
++        protected override void Down(MigrationBuilder migrationBuilder)
++        {
++            // Make the column nullable again
++            migrationBuilder.AlterColumn<string>(
++                name: "RecipientPhoneNumber",
++                table: "Shipments",
++                type: "text",
++                nullable: true,
++                oldClrType: typeof(string),
++                oldType: "text");
++        }
++    }
++} 
+\ No newline at end of file
+diff --git a/WebApplication1/Program.cs b/WebApplication1/Program.cs
+index a3b011f..c569568 100644
+--- a/WebApplication1/Program.cs
++++ b/WebApplication1/Program.cs
+@@ -5,6 +5,14 @@ using WebApplication1.Application.Services;
+ using WebApplication1.Domain.Services;
+ using WebApplication1.Infrastructure.Services;
+ using Npgsql.EntityFrameworkCore.PostgreSQL;
++using Microsoft.AspNetCore.Builder;
++using Microsoft.AspNetCore.Hosting;
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Hosting;
++using Microsoft.OpenApi.Models;
++using WebApplication1.Infrastructure.Extensions;
++using System;
+ 
+ var builder = WebApplication.CreateBuilder(args);
+ 
+@@ -83,15 +91,22 @@ app.UseCors("AllowGitHubPages"); // Apply the named CORS policy
+ app.UseAuthorization();
+ app.MapControllers();
+ 
+-// Apply migrations at startup
+-if (app.Environment.IsProduction())
++// Apply migrations in both development and production environments
++Console.WriteLine("Applying migrations...");
++using (var scope = app.Services.CreateScope())
+ {
+-    using (var scope = app.Services.CreateScope())
++    var services = scope.ServiceProvider;
++    try
+     {
+-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+-        Console.WriteLine("Applying migrations...");
+-        db.Database.Migrate();
+-        Console.WriteLine("Migrations applied successfully!");
++        var dbContext = services.GetRequiredService<ApplicationDbContext>();
++        dbContext.Database.Migrate();
++        Console.WriteLine("Migrations applied successfully.");
++    }
++    catch (Exception ex)
++    {
++        Console.WriteLine($"An error occurred while applying migrations: {ex.Message}");
++        Console.WriteLine($"Stack trace: {ex.StackTrace}");
++        // Don't throw the exception - let the application continue
+     }
+ }
+ 
+diff --git a/WebApplication1/add-recipient-phone.sql b/WebApplication1/add-recipient-phone.sql
+new file mode 100644
+index 0000000..2c55bd1
+--- /dev/null
++++ b/WebApplication1/add-recipient-phone.sql
+@@ -0,0 +1,14 @@
++-- Check if the column exists, if not, add it
++DO $$
++BEGIN
++    IF NOT EXISTS (
++        SELECT 1
++        FROM information_schema.columns
++        WHERE table_name = 'Shipments' AND column_name = 'RecipientPhoneNumber'
++    ) THEN
++        ALTER TABLE "Shipments" ADD COLUMN "RecipientPhoneNumber" TEXT;
++        RAISE NOTICE 'Column RecipientPhoneNumber added to Shipments table';
++    ELSE
++        RAISE NOTICE 'Column RecipientPhoneNumber already exists in Shipments table';
++    END IF;
++END $$; 
+\ No newline at end of file
+diff --git a/WebApplication1/appsettings.json b/WebApplication1/appsettings.json
+index a32db41..2f143e2 100644
+--- a/WebApplication1/appsettings.json
++++ b/WebApplication1/appsettings.json
+@@ -18,8 +18,8 @@
+     "SenderEmail": "your-email@domain.com"
+   },
+   "SmsSettings": {
+-    "AccountSid": "your-twilio-account-sid",
+-    "AuthToken": "your-twilio-auth-token",
++    "AccountSid": "YOUR_TWILIO_ACCOUNT_SID",
++    "AuthToken": "YOUR_TWILIO_AUTH_TOKEN",
+     "TwilioPhoneNumber": "+1234567890"
+   },
+   "PasswordSalt": "ParcelTracker2024!SecureSalt#SHA256"
+diff --git a/WebApplication1/check-database.sql b/WebApplication1/check-database.sql
+new file mode 100644
+index 0000000..cb0ef1d
+--- /dev/null
++++ b/WebApplication1/check-database.sql
+@@ -0,0 +1,10 @@
++-- Check if the Shipments table has the RecipientPhoneNumber column
++SELECT column_name, data_type 
++FROM information_schema.columns 
++WHERE table_name = 'Shipments'
++ORDER BY ordinal_position;
++
++-- Check a sample shipment to see if it has RecipientPhoneNumber data
++SELECT "Id", "RecipientName", "RecipientPhoneNumber", "TrackingId"
++FROM "Shipments"
++LIMIT 5; 
+\ No newline at end of file
+diff --git a/WebApplication1/check-otps.sql b/WebApplication1/check-otps.sql
+new file mode 100644
+index 0000000..08be50a
+--- /dev/null
++++ b/WebApplication1/check-otps.sql
+@@ -0,0 +1,16 @@
++-- Check if the DeliveryOtps table exists
++SELECT EXISTS (
++   SELECT FROM information_schema.tables 
++   WHERE table_name = 'DeliveryOtps'
++) AS "DeliveryOtps_Table_Exists";
++
++-- Check the structure of the DeliveryOtps table
++SELECT column_name, data_type, is_nullable 
++FROM information_schema.columns 
++WHERE table_name = 'DeliveryOtps';
++
++-- Count the number of OTPs in the table
++SELECT COUNT(*) AS "Total_OTPs" FROM "DeliveryOtps";
++
++-- Show the most recent OTPs
++SELECT * FROM "DeliveryOtps" ORDER BY "Id" DESC LIMIT 10; 
+\ No newline at end of file
+diff --git a/WebApplication1/fix-recipient-phone.sql b/WebApplication1/fix-recipient-phone.sql
+new file mode 100644
+index 0000000..4770dee
+--- /dev/null
++++ b/WebApplication1/fix-recipient-phone.sql
+@@ -0,0 +1,19 @@
++-- First ensure the column exists
++DO $$
++BEGIN
++    IF NOT EXISTS (
++        SELECT 1
++        FROM information_schema.columns
++        WHERE table_name = 'Shipments' AND column_name = 'RecipientPhoneNumber'
++    ) THEN
++        ALTER TABLE "Shipments" ADD COLUMN "RecipientPhoneNumber" TEXT;
++    END IF;
++END $$;
++
++-- Update any existing records with null or empty RecipientPhoneNumber
++UPDATE "Shipments"
++SET "RecipientPhoneNumber" = '0000000000'
++WHERE "RecipientPhoneNumber" IS NULL OR "RecipientPhoneNumber" = '';
++
++-- Add a NOT NULL constraint to the column
++ALTER TABLE "Shipments" ALTER COLUMN "RecipientPhoneNumber" SET NOT NULL; 
+\ No newline at end of file
+diff --git a/WebApplication1/run-check-otps.sh b/WebApplication1/run-check-otps.sh
+new file mode 100755
+index 0000000..897a569
+--- /dev/null
++++ b/WebApplication1/run-check-otps.sh
+@@ -0,0 +1,15 @@
++#!/bin/bash
++
++# Get connection string from appsettings.json
++CONNECTION_STRING=$(grep -o '"DefaultConnection": "[^"]*"' appsettings.json | cut -d'"' -f4)
++
++# Extract PostgreSQL connection details
++HOST=$(echo $CONNECTION_STRING | grep -o 'Host=[^;]*' | cut -d'=' -f2)
++PORT=$(echo $CONNECTION_STRING | grep -o 'Port=[^;]*' | cut -d'=' -f2)
++DATABASE=$(echo $CONNECTION_STRING | grep -o 'Database=[^;]*' | cut -d'=' -f2)
++USERNAME=$(echo $CONNECTION_STRING | grep -o 'Username=[^;]*' | cut -d'=' -f2)
++PASSWORD=$(echo $CONNECTION_STRING | grep -o 'Password=[^;]*' | cut -d'=' -f2)
++
++echo "Checking OTP table and data..."
++export PGPASSWORD=$PASSWORD
++psql -h $HOST -p $PORT -d $DATABASE -U $USERNAME -f check-otps.sql 
+\ No newline at end of file
+diff --git a/WebApplication1/run-sql-fix.sh b/WebApplication1/run-sql-fix.sh
+new file mode 100755
+index 0000000..048338a
+--- /dev/null
++++ b/WebApplication1/run-sql-fix.sh
+@@ -0,0 +1,21 @@
++#!/bin/bash
++
++# Get connection string from appsettings.json
++CONNECTION_STRING=$(grep -o '"DefaultConnection": "[^"]*"' appsettings.json | cut -d'"' -f4)
++
++# Extract PostgreSQL connection details
++HOST=$(echo $CONNECTION_STRING | grep -o 'Host=[^;]*' | cut -d'=' -f2)
++PORT=$(echo $CONNECTION_STRING | grep -o 'Port=[^;]*' | cut -d'=' -f2)
++DATABASE=$(echo $CONNECTION_STRING | grep -o 'Database=[^;]*' | cut -d'=' -f2)
++USERNAME=$(echo $CONNECTION_STRING | grep -o 'Username=[^;]*' | cut -d'=' -f2)
++PASSWORD=$(echo $CONNECTION_STRING | grep -o 'Password=[^;]*' | cut -d'=' -f2)
++
++echo "Executing SQL fix..."
++export PGPASSWORD=$PASSWORD
++psql -h $HOST -p $PORT -d $DATABASE -U $USERNAME -f fix-recipient-phone.sql
++
++echo "SQL fix executed. Checking column status..."
++psql -h $HOST -p $PORT -d $DATABASE -U $USERNAME -c "SELECT column_name, is_nullable, data_type FROM information_schema.columns WHERE table_name = 'Shipments' AND column_name = 'RecipientPhoneNumber';"
++
++echo "Checking sample data..."
++psql -h $HOST -p $PORT -d $DATABASE -U $USERNAME -c "SELECT \"Id\", \"RecipientName\", \"RecipientPhoneNumber\" FROM \"Shipments\" LIMIT 5;" 
+\ No newline at end of file
+diff --git a/WebApplication1/run-with-migrations.sh b/WebApplication1/run-with-migrations.sh
+new file mode 100755
+index 0000000..bfbf227
+--- /dev/null
++++ b/WebApplication1/run-with-migrations.sh
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++# Build the application
++echo "Building the application..."
++dotnet build
++
++# Apply migrations
++echo "Applying migrations..."
++dotnet ef database update
++
++# Run the application
++echo "Starting the application..."
++dotnet run --launch-profile "https" 
+\ No newline at end of file
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..f2b9d5f
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,5 @@
++{
++  "dependencies": {
++    "axios": "^1.10.0"
++  }
++}
+diff --git a/parcel-tracking-frontend/src/App.jsx b/parcel-tracking-frontend/src/App.jsx
+index d8ab043..ae3aa8e 100644
+--- a/parcel-tracking-frontend/src/App.jsx
++++ b/parcel-tracking-frontend/src/App.jsx
+@@ -10,6 +10,7 @@ import DirectTrackShipment from './components/DirectTrackShipment';
+ import OtpVerification from './components/OtpVerification';
+ import HandlerLogin from './components/HandlerLogin';
+ import HandlerDashboard from './components/HandlerDashboard';
++import HandlerOtpVerification from './components/HandlerOtpVerification';
+ import AdminLogin from './components/AdminLogin';
+ import AdminDashboard from './components/AdminDashboard';
+ 
+@@ -58,7 +59,8 @@ const Navigation = () => {
+       location.pathname === '/dashboard' ||
+       location.pathname === '/create-shipment' ||
+       location.pathname === '/track-shipment' ||
+-      location.pathname.startsWith('/otp-verification/')) {
++      location.pathname.startsWith('/otp-verification/') ||
++      location.pathname.startsWith('/handler-otp-verification/')) {
+     return null;
+   }
+ 
+@@ -150,6 +152,14 @@ function App() {
+               </HandlerProtectedRoute>
+             } 
+           />
++          <Route 
++            path="/handler-otp-verification/:shipmentId" 
++            element={
++              <HandlerProtectedRoute>
++                <HandlerOtpVerification />
++              </HandlerProtectedRoute>
++            } 
++          />
+ 
+           {/* Admin Routes */}
+           <Route path="/admin-login" element={<AdminLogin />} />
+diff --git a/parcel-tracking-frontend/src/components/CreateShipment.jsx b/parcel-tracking-frontend/src/components/CreateShipment.jsx
+index 4c94d89..0397a19 100644
+--- a/parcel-tracking-frontend/src/components/CreateShipment.jsx
++++ b/parcel-tracking-frontend/src/components/CreateShipment.jsx
+@@ -7,6 +7,7 @@ const CreateShipment = () => {
+   const [formData, setFormData] = useState({
+     recipientName: '',
+     deliveryAddress: '',
++    recipientPhoneNumber: '',
+     weight: '',
+     packageType: '',
+     specialInstructions: ''
+@@ -35,6 +36,13 @@ const CreateShipment = () => {
+       return;
+     }
+ 
++    // Validate phone number
++    const phoneRegex = /^[0-9]{10,15}$/;
++    if (!phoneRegex.test(formData.recipientPhoneNumber)) {
++      setError('Please enter a valid phone number (10-15 digits)');
++      return;
++    }
++
+     setLoading(true);
+ 
+     try {
+@@ -42,6 +50,7 @@ const CreateShipment = () => {
+       const shipmentData = {
+         recipientName: formData.recipientName,
+         deliveryAddress: formData.deliveryAddress,
++        recipientPhoneNumber: formData.recipientPhoneNumber,
+         weight: weight,
+         packageType: formData.packageType || 'General',
+         specialInstructions: formData.specialInstructions || '',
+@@ -142,6 +151,28 @@ const CreateShipment = () => {
+               </div>
+             </div>
+             
++            <div className="form-row">
++              <div className="form-group">
++                <label htmlFor="recipientPhoneNumber">
++                  <span className="label-icon">📱</span>
++                  Recipient Phone Number
++                </label>
++                <input
++                  type="tel"
++                  id="recipientPhoneNumber"
++                  name="recipientPhoneNumber"
++                  value={formData.recipientPhoneNumber}
++                  onChange={handleChange}
++                  required
++                  placeholder="Enter recipient's phone number (e.g., 9876543210)"
++                  className="modern-input"
++                />
++                <small className="form-hint">
++                  Phone number will be used for delivery OTP
++                </small>
++              </div>
++            </div>
++            
+             <div className="form-row">
+               <div className="form-group">
+                 <label htmlFor="deliveryAddress">
+diff --git a/parcel-tracking-frontend/src/components/Dashboard.css b/parcel-tracking-frontend/src/components/Dashboard.css
+index e3d2c53..7d683cb 100644
+--- a/parcel-tracking-frontend/src/components/Dashboard.css
++++ b/parcel-tracking-frontend/src/components/Dashboard.css
+@@ -2123,4 +2123,10 @@
+     padding: 12px;
+     font-size: 0.9rem;
+   }
++}
++
++.delivered-badge.tampered {
++  background-color: #ff9800;
++  color: #fff;
++  border: 1px solid #e65100;
+ } 
+\ No newline at end of file
+diff --git a/parcel-tracking-frontend/src/components/Dashboard.jsx b/parcel-tracking-frontend/src/components/Dashboard.jsx
+index 1985151..0a24b9e 100644
+--- a/parcel-tracking-frontend/src/components/Dashboard.jsx
++++ b/parcel-tracking-frontend/src/components/Dashboard.jsx
+@@ -31,12 +31,15 @@ const Dashboard = () => {
+ 
+   const handleDeliverOtp = async (shipmentId) => {
+     try {
+-      await apiClient.post(`/shipment/otp/${shipmentId}`);
+-      alert('OTP sent to your email!');
+-      navigate(`/otp-verification/${shipmentId}`);
++      // Get the shipment with the corresponding ID
++      const shipment = shipments.find(s => s.id === shipmentId);
++      if (shipment) {
++        navigate(`/track/${shipment.trackingId}`);
++      } else {
++        setError('Shipment not found');
++      }
+     } catch (err) {
+-      setError('Failed to generate delivery OTP');
+-      console.error('Error generating OTP:', err);
++      setError('Failed to navigate to tracking page');
+     }
+   };
+ 
+@@ -204,13 +207,17 @@ const Dashboard = () => {
+                 </div>
+ 
+                 <div className="card-actions">
+-                  {shipment.status !== 'Delivered' ? (
++                  {!shipment.status.includes('Delivered') ? (
+                     <button
+                       onClick={() => handleDeliverOtp(shipment.id)}
+                       className="modern-btn primary"
+                     >
+-                      🔐 Generate OTP
++                      🔍 Track Package
+                     </button>
++                  ) : shipment.status === 'Delivered_Tampered' ? (
++                    <div className="delivered-badge tampered">
++                      ⚠️ Delivered (Tampered)
++                    </div>
+                   ) : (
+                     <div className="delivered-badge">
+                       ✅ Delivered
+diff --git a/parcel-tracking-frontend/src/components/HandlerDashboard.jsx b/parcel-tracking-frontend/src/components/HandlerDashboard.jsx
+index 56ae83a..01470f8 100644
+--- a/parcel-tracking-frontend/src/components/HandlerDashboard.jsx
++++ b/parcel-tracking-frontend/src/components/HandlerDashboard.jsx
+@@ -93,7 +93,7 @@ const HandlerDashboard = () => {
+         alert(`⚠️ TAMPER DETECTED!\n\n${error.response.data.tamperReason}\n\nThe shipment has been marked as tampered.`);
+         fetchShipments(); // Refresh to show tampered status
+       } else {
+-        alert('Failed to update shipment status');
++      alert('Failed to update shipment status');
+       }
+     }
+   };
+@@ -112,7 +112,7 @@ const HandlerDashboard = () => {
+         if (response.data.warning) {
+           alert(`⚠️ TAMPERED PACKAGE DELIVERED\n\n${response.data.message}\n\n${response.data.warning}\n\nRecipient will be notified of tampering.`);
+         } else {
+-          alert('Shipment marked as delivered successfully!');
++        alert('Shipment marked as delivered successfully!');
+         }
+       } catch (error) {
+         if (error.response?.data?.canDeliverAnyway) {
+@@ -125,7 +125,7 @@ const HandlerDashboard = () => {
+           }
+           fetchShipments(); // Refresh to show tampered status
+         } else {
+-          alert('Failed to mark shipment as delivered');
++        alert('Failed to mark shipment as delivered');
+         }
+       }
+     }
+@@ -163,12 +163,10 @@ const HandlerDashboard = () => {
+ 
+   const generateOTP = async (shipmentId) => {
+     try {
+-      const response = await apiClient.post(`/shipment/otp/${shipmentId}`);
+-      if (response.data.otp) {
+-        alert(`OTP generated: ${response.data.otp}\nThis has been sent to the customer via email and SMS.`);
+-      }
++      // Navigate to the OTP verification page for the handler
++      navigate(`/handler-otp-verification/${shipmentId}`);
+     } catch (error) {
+-      alert('Failed to generate OTP');
++      alert('Failed to navigate to OTP verification page');
+     }
+   };
+ 
+@@ -246,43 +244,43 @@ const HandlerDashboard = () => {
+         <div className="filter-section">
+           <div className="filter-group">
+             <label>Status:</label>
+-            <div className="filter-buttons">
+-              <button 
+-                className={statusFilter === 'all' ? 'active' : ''} 
+-                onClick={() => handleStatusFilter('all')}
+-              >
+-                All Shipments
+-              </button>
+-              <button 
+-                className={statusFilter === 'Pending' ? 'active' : ''} 
+-                onClick={() => handleStatusFilter('Pending')}
+-              >
+-                Pending
+-              </button>
++        <div className="filter-buttons">
++          <button 
++            className={statusFilter === 'all' ? 'active' : ''} 
++            onClick={() => handleStatusFilter('all')}
++          >
++            All Shipments
++          </button>
++          <button 
++            className={statusFilter === 'Pending' ? 'active' : ''} 
++            onClick={() => handleStatusFilter('Pending')}
++          >
++            Pending
++          </button>
+               <button 
+                 className={statusFilter === 'Picked Up' ? 'active' : ''} 
+                 onClick={() => handleStatusFilter('Picked Up')}
+               >
+                 Picked Up
+               </button>
+-              <button 
+-                className={statusFilter === 'In Transit' ? 'active' : ''} 
+-                onClick={() => handleStatusFilter('In Transit')}
+-              >
+-                In Transit
+-              </button>
++          <button 
++            className={statusFilter === 'In Transit' ? 'active' : ''} 
++            onClick={() => handleStatusFilter('In Transit')}
++          >
++            In Transit
++          </button>
+               <button 
+                 className={statusFilter === 'Out for Delivery' ? 'active' : ''} 
+                 onClick={() => handleStatusFilter('Out for Delivery')}
+               >
+                 Out for Delivery
+               </button>
+-              <button 
+-                className={statusFilter === 'Delivered' ? 'active' : ''} 
+-                onClick={() => handleStatusFilter('Delivered')}
+-              >
+-                Delivered
+-              </button>
++          <button 
++            className={statusFilter === 'Delivered' ? 'active' : ''} 
++            onClick={() => handleStatusFilter('Delivered')}
++          >
++            Delivered
++          </button>
+               <button 
+                 className={statusFilter === 'Delivered_Tampered' ? 'active tamper-delivered-filter' : 'tamper-delivered-filter'} 
+                 onClick={() => handleStatusFilter('Delivered_Tampered')}
+@@ -337,7 +335,7 @@ const HandlerDashboard = () => {
+                 {shipment.wasDeliveredWithTamper && (
+                   <span className="tamper-delivered-badge">
+                     🟠 DELIVERED WITH TAMPER
+-                  </span>
++              </span>
+                 )}
+               </div>
+             </div>
+@@ -369,7 +367,7 @@ const HandlerDashboard = () => {
+               {/* Normal workflow for non-tampered packages */}
+               {!shipment.isTampered && (
+                 <>
+-                  {shipment.status === 'Pending' && (
++              {shipment.status === 'Pending' && (
+                     <button 
+                       onClick={() => updateShipmentStatus(shipment.id, 'Picked Up')}
+                       className="action-btn picked-up"
+@@ -379,25 +377,25 @@ const HandlerDashboard = () => {
+                   )}
+                   
+                   {shipment.status === 'Picked Up' && (
+-                    <button 
+-                      onClick={() => updateShipmentStatus(shipment.id, 'In Transit')}
+-                      className="action-btn in-transit"
+-                    >
+-                      Mark In Transit
+-                    </button>
+-                  )}
+-                  
+-                  {shipment.status === 'In Transit' && (
+-                    <>
+-                      <button 
+-                        onClick={() => {
+-                          const location = prompt('Enter current location:');
+-                          if (location) updateShipmentStatus(shipment.id, 'In Transit', location);
+-                        }}
+-                        className="action-btn update"
+-                      >
+-                        Update Location
+-                      </button>
++                <button 
++                  onClick={() => updateShipmentStatus(shipment.id, 'In Transit')}
++                  className="action-btn in-transit"
++                >
++                  Mark In Transit
++                </button>
++              )}
++              
++              {shipment.status === 'In Transit' && (
++                <>
++                  <button 
++                    onClick={() => {
++                      const location = prompt('Enter current location:');
++                      if (location) updateShipmentStatus(shipment.id, 'In Transit', location);
++                    }}
++                    className="action-btn update"
++                  >
++                    Update Location
++                  </button>
+                       <button 
+                         onClick={() => updateShipmentStatus(shipment.id, 'Out for Delivery')}
+                         className="action-btn out-for-delivery"
+@@ -408,12 +406,12 @@ const HandlerDashboard = () => {
+                   )}
+                   
+                   {shipment.status === 'Out for Delivery' && (
+-                    <button 
+-                      onClick={() => markAsDelivered(shipment.id)}
+-                      className="action-btn delivered"
+-                    >
+-                      Mark Delivered
+-                    </button>
++                  <button 
++                    onClick={() => generateOTP(shipment.id)}
++                    className="action-btn delivered"
++                  >
++                    Verify Delivery (OTP)
++                  </button>
+                   )}
+                 </>
+               )}
+@@ -425,10 +423,10 @@ const HandlerDashboard = () => {
+                     ⚠️ This package is marked as tampered
+                   </div>
+                   <button 
+-                    onClick={() => markAsDelivered(shipment.id)}
++                    onClick={() => generateOTP(shipment.id)}
+                     className="action-btn force-deliver"
+                   >
+-                    🟠 Deliver as Tampered
++                    🟠 Verify & Deliver as Tampered
+                   </button>
+                 </div>
+               )}
+@@ -436,12 +434,14 @@ const HandlerDashboard = () => {
+               {/* Common actions for non-delivered packages */}
+               {!shipment.status.includes('Delivered') && (
+                 <>
++                {shipment.qrCodeImage && (
+                   <button 
+                     onClick={() => generateOTP(shipment.id)}
+-                    className="action-btn otp"
++                    className="action-btn qr-code"
+                   >
+-                    Generate OTP
++                    🔍 Scan QR & Verify
+                   </button>
++                )}
+                   
+                   {!shipment.isTampered && (
+                     <button 
+diff --git a/parcel-tracking-frontend/src/components/HandlerOtpVerification.jsx b/parcel-tracking-frontend/src/components/HandlerOtpVerification.jsx
+new file mode 100644
+index 0000000..7931d5a
+--- /dev/null
++++ b/parcel-tracking-frontend/src/components/HandlerOtpVerification.jsx
+@@ -0,0 +1,400 @@
++import React, { useState, useEffect } from 'react';
++import { useParams, useNavigate } from 'react-router-dom';
++import apiClient from '../api/apiClient';
++import './Dashboard.css';
++
++const HandlerOtpVerification = () => {
++  const { shipmentId } = useParams();
++  const [otp, setOtp] = useState('');
++  const [error, setError] = useState('');
++  const [success, setSuccess] = useState('');
++  const [loading, setLoading] = useState(false);
++  const [shipment, setShipment] = useState(null);
++  const [loadingShipment, setLoadingShipment] = useState(true);
++  const navigate = useNavigate();
++
++  useEffect(() => {
++    // Check if handler is logged in
++    const handlerUser = localStorage.getItem('handlerUser');
++    const userRole = localStorage.getItem('userRole');
++    
++    if (!handlerUser || userRole !== 'handler') {
++      navigate('/handler-login');
++      return;
++    }
++    
++    // Load shipment details
++    fetchShipment();
++  }, [shipmentId, navigate]);
++
++  const fetchShipment = async () => {
++    try {
++      setLoadingShipment(true);
++      const response = await apiClient.get(`/shipment/${shipmentId}`);
++      setShipment(response.data);
++      
++      // Update shipment status to "Out for Delivery" if not already
++      if (response.data.status !== 'Out for Delivery' && response.data.status !== 'Delivered') {
++        await apiClient.put(`/handler/shipments/${shipmentId}/status`, {
++          status: 'Out for Delivery',
++          handlerEmail: JSON.parse(localStorage.getItem('handlerUser')).email
++        });
++      }
++    } catch (err) {
++      setError('Failed to fetch shipment data');
++      console.error('Error fetching shipment:', err);
++    } finally {
++      setLoadingShipment(false);
++    }
++  };
++
++  const generateOtp = async () => {
++    try {
++      setLoading(true);
++      const response = await apiClient.post(`/handler/shipments/${shipmentId}/generate-otp`);
++      
++      if (response.data && response.data.recipientPhone) {
++        setSuccess(`OTP has been sent to the recipient's phone: ${response.data.recipientPhone}`);
++      } else {
++        setSuccess('OTP has been sent to the recipient\'s phone.');
++      }
++      
++      setError('');
++    } catch (err) {
++      if (err.response?.data?.message) {
++        setError(err.response.data.message);
++        
++        // Display additional information for debugging
++        if (err.response.data.recipientPhone === null || err.response.data.recipientPhone === '') {
++          setError(`${err.response.data.message} (Recipient phone number is empty or null)`);
++        } else if (err.response.data.recipientPhone) {
++          setError(`${err.response.data.message} (Recipient phone: ${err.response.data.recipientPhone})`);
++        }
++      } else {
++        setError('Failed to generate OTP. Please ensure recipient has a valid phone number.');
++      }
++      console.error('Error generating OTP:', err);
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const handleSubmit = async (e) => {
++    e.preventDefault();
++    
++    if (!otp || otp.length !== 6) {
++      setError('Please enter a valid 6-digit OTP');
++      return;
++    }
++
++    setError('');
++    setSuccess('');
++    setLoading(true);
++
++    try {
++      const response = await apiClient.post(`/handler/shipments/${shipmentId}/verify-otp`, {
++        otp: otp,
++        handlerEmail: JSON.parse(localStorage.getItem('handlerUser')).email
++      });
++      
++      if (response.data.warning) {
++        // For tampered packages
++        setSuccess(`Delivery confirmed! ${response.data.message} ${response.data.warning}`);
++      } else {
++        // For normal packages
++        setSuccess('Delivery confirmed! Shipment marked as Delivered.');
++      }
++      
++      // Navigate back to dashboard after a delay
++      setTimeout(() => {
++        navigate('/handler-dashboard');
++      }, 2000);
++    } catch (err) {
++      setError(err.response?.data?.message || 'Invalid OTP. Please check and try again.');
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const handleOtpChange = (e) => {
++    const value = e.target.value.replace(/\D/g, ''); // Only allow digits
++    if (value.length <= 6) {
++      setOtp(value);
++    }
++  };
++
++  const handlePrint = () => {
++    window.print();
++  };
++
++  if (loadingShipment) {
++    return (
++      <div className="loading">
++        <div className="spinner"></div>
++        <p>Loading shipment data...</p>
++      </div>
++    );
++  }
++
++  return (
++    <div className="otp-verification-container">
++      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
++        <h2>Delivery Verification</h2>
++        <div>
++          <button 
++            onClick={handlePrint}
++            className="btn-secondary print-btn"
++            style={{ marginRight: '1rem' }}
++          >
++            🖨️ Print Label
++          </button>
++          <button 
++            onClick={() => navigate('/handler-dashboard')}
++            className="btn-secondary"
++          >
++            Back to Dashboard
++          </button>
++        </div>
++      </div>
++
++      {shipment && (
++        <div className="shipment-details-card">
++          <div className="print-section">
++            <div className="header-section">
++              <h2>Parcel Tracking</h2>
++              <h3>Tracking ID: {shipment.trackingId}</h3>
++            </div>
++            
++            <div className="details-grid">
++              <div className="detail-item">
++                <strong>Recipient:</strong> 
++                <span>{shipment.recipientName}</span>
++              </div>
++              <div className="detail-item">
++                <strong>Phone:</strong> 
++                <span>{shipment.recipientPhoneNumber || "Not provided"}</span>
++              </div>
++              <div className="detail-item">
++                <strong>Destination:</strong> 
++                <span>{shipment.deliveryAddress}</span>
++              </div>
++              <div className="detail-item">
++                <strong>Package:</strong> 
++                <span>{shipment.packageType} ({shipment.weight} kg)</span>
++              </div>
++              <div className="detail-item">
++                <strong>Sender:</strong> 
++                <span>{shipment.userEmail}</span>
++              </div>
++              <div className="detail-item">
++                <strong>Created:</strong> 
++                <span>{new Date(shipment.createdAt).toLocaleDateString()}</span>
++              </div>
++              <div className="detail-item">
++                <strong>Status:</strong> 
++                <span>{shipment.status}</span>
++              </div>
++            </div>
++            
++            {shipment.qrCodeImage && (
++              <div className="qr-code-container">
++                <img 
++                  src={`data:image/png;base64,${shipment.qrCodeImage}`}
++                  alt="Tracking QR Code"
++                  className="qr-code-image"
++                />
++                <p className="qr-code-caption">Scan to track package</p>
++              </div>
++            )}
++
++            <div className="special-instructions">
++              <strong>Special Instructions:</strong>
++              <p>{shipment.specialInstructions || 'No special instructions'}</p>
++            </div>
++          </div>
++        </div>
++      )}
++
++      <div className="form-container no-print">
++        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
++          <h3>OTP Verification</h3>
++          <p style={{ color: '#666' }}>
++            Please generate an OTP and have the recipient enter it to confirm delivery
++          </p>
++          
++          {shipment && shipment.isTampered && (
++            <div className="tampered-warning" style={{ 
++              backgroundColor: '#fff3cd', 
++              color: '#856404', 
++              padding: '10px 15px', 
++              borderRadius: '4px', 
++              margin: '15px 0', 
++              border: '1px solid #ffeeba',
++              display: 'flex',
++              alignItems: 'center',
++              gap: '10px'
++            }}>
++              <span style={{ fontSize: '24px' }}>⚠️</span>
++              <div>
++                <strong>Warning: Tampered Package</strong>
++                <p style={{ margin: '5px 0 0 0', fontSize: '0.9rem' }}>
++                  This package has been marked as tampered. OTP verification is still required before delivery.
++                  {shipment.tamperReason && (
++                    <span style={{ display: 'block', marginTop: '5px' }}>
++                      <strong>Reason:</strong> {shipment.tamperReason}
++                    </span>
++                  )}
++                </p>
++              </div>
++            </div>
++          )}
++        </div>
++
++        {error && <div className="error">{error}</div>}
++        {success && <div className="success">{success}</div>}
++
++        <form onSubmit={handleSubmit}>
++          <div className="form-group">
++            <label htmlFor="otp">Delivery OTP:</label>
++            <input
++              type="text"
++              id="otp"
++              value={otp}
++              onChange={handleOtpChange}
++              placeholder="Enter 6-digit OTP"
++              maxLength="6"
++              className="otp-input"
++              style={{ 
++                fontSize: '1.5rem', 
++                textAlign: 'center', 
++                letterSpacing: '0.5rem',
++                fontFamily: 'monospace'
++              }}
++              required
++            />
++            <small style={{ color: '#666', fontSize: '0.875rem' }}>
++              Enter the 6-digit code as provided by the recipient
++            </small>
++          </div>
++
++          <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
++            <button
++              type="button" 
++              onClick={generateOtp}
++              className="btn-primary"
++              disabled={loading}
++            >
++              {loading ? 'Generating...' : '📱 Generate & Send OTP'}
++            </button>
++            
++            <button type="submit" disabled={loading || otp.length !== 6}>
++              {loading ? 'Verifying...' : shipment && shipment.isTampered 
++                ? '⚠️ Verify OTP & Mark Delivered (Tampered)' 
++                : '✅ Verify OTP & Mark Delivered'}
++            </button>
++          </div>
++        </form>
++
++        <div style={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
++          <h4>Instructions:</h4>
++          <ul style={{ paddingLeft: '1.5rem', lineHeight: '1.6', margin: '0.5rem 0' }}>
++            <li>Generate an OTP to send to the recipient's phone</li>
++            <li>Ask the recipient to check their phone for the 6-digit OTP</li>
++            <li>Enter the code exactly as provided by the recipient</li>
++            <li>The OTP is valid for a limited time</li>
++            <li>Once verified, the shipment will be marked as delivered</li>
++          </ul>
++        </div>
++      </div>
++      
++      <style>
++        {`
++          @media print {
++            body * {
++              visibility: hidden;
++            }
++            .print-section, .print-section * {
++              visibility: visible;
++            }
++            .no-print {
++              display: none;
++            }
++            .print-section {
++              position: absolute;
++              left: 0;
++              top: 0;
++              width: 100%;
++              padding: 20px;
++            }
++            .qr-code-image {
++              width: 200px;
++              height: 200px;
++            }
++          }
++          
++          .otp-verification-container {
++            padding: 20px;
++            max-width: 800px;
++            margin: 0 auto;
++          }
++          
++          .print-btn {
++            background-color: #6c757d;
++          }
++          
++          .print-section {
++            border: 2px solid #333;
++            padding: 20px;
++            margin-bottom: 30px;
++            border-radius: 8px;
++          }
++          
++          .header-section {
++            text-align: center;
++            margin-bottom: 20px;
++            border-bottom: 1px solid #ddd;
++            padding-bottom: 10px;
++          }
++          
++          .details-grid {
++            display: grid;
++            grid-template-columns: 1fr 1fr;
++            gap: 15px;
++            margin-bottom: 20px;
++          }
++          
++          .detail-item {
++            display: flex;
++            flex-direction: column;
++          }
++          
++          .qr-code-container {
++            display: flex;
++            flex-direction: column;
++            align-items: center;
++            margin-top: 20px;
++            margin-bottom: 20px;
++          }
++          
++          .qr-code-image {
++            width: 150px;
++            height: 150px;
++          }
++          
++          .qr-code-caption {
++            margin-top: 8px;
++            font-style: italic;
++          }
++          
++          .special-instructions {
++            margin-top: 20px;
++            border-top: 1px solid #ddd;
++            padding-top: 15px;
++          }
++        `}
++      </style>
++    </div>
++  );
++};
++
++export default HandlerOtpVerification; 
+\ No newline at end of file
+diff --git a/test-create-shipment.js b/test-create-shipment.js
+new file mode 100644
+index 0000000..868ac50
+--- /dev/null
++++ b/test-create-shipment.js
+@@ -0,0 +1,28 @@
++// Test script to create a shipment with recipient phone number
++const axios = require('axios');
++
++const createShipment = async () => {
++  try {
++    const response = await axios.post('http://localhost:8080/api/shipment', {
++      recipientName: 'Test Recipient',
++      recipientPhoneNumber: '9876543210',
++      deliveryAddress: '123 Test Street, Test City',
++      weight: 1.5,
++      packageType: 'General',
++      specialInstructions: 'Test instructions',
++      userId: 19
++    }, {
++      headers: {
++        'Content-Type': 'application/json'
++      }
++    });
++    
++    console.log('Shipment created successfully:');
++    console.log(response.data);
++  } catch (error) {
++    console.error('Error creating shipment:');
++    console.error(error.response?.data || error.message);
++  }
++};
++
++createShipment(); 
+\ No newline at end of file
+diff --git a/test-debug-binding.js b/test-debug-binding.js
+new file mode 100644
+index 0000000..f37c3a2
+--- /dev/null
++++ b/test-debug-binding.js
+@@ -0,0 +1,28 @@
++// Test script to debug model binding
++const axios = require('axios');
++
++const testDebugBinding = async () => {
++  try {
++    const response = await axios.post('http://localhost:8080/api/shipment/debug', {
++      recipientName: 'Test Recipient',
++      recipientPhoneNumber: '9876543210',
++      deliveryAddress: '123 Test Street, Test City',
++      weight: 1.5,
++      packageType: 'General',
++      specialInstructions: 'Test instructions',
++      userId: 1
++    }, {
++      headers: {
++        'Content-Type': 'application/json'
++      }
++    });
++    
++    console.log('Debug response:');
++    console.log(response.data);
++  } catch (error) {
++    console.error('Error in debug binding:');
++    console.error(error.response?.data || error.message);
++  }
++};
++
++testDebugBinding(); 
+\ No newline at end of file
+diff --git a/test/doctest/package.json b/test/doctest/package.json
+new file mode 100644
+index 0000000..bccc88d
+--- /dev/null
++++ b/test/doctest/package.json
+@@ -0,0 +1,5 @@
++{
++  "dependencies": {
++    "twilio": "^5.7.1"
++  }
++}
+diff --git a/test/doctest/testing.js b/test/doctest/testing.js
+new file mode 100644
+index 0000000..50b5502
+--- /dev/null
++++ b/test/doctest/testing.js
+@@ -0,0 +1,20 @@
++// Download the helper library from https://www.twilio.com/docs/node/install
++const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
++
++// Find your Account SID and Auth Token at twilio.com/console
++// and set the environment variables. See http://twil.io/secure
++const accountSid = "YOUR_TWILIO_ACCOUNT_SID";
++const authToken = "YOUR_TWILIO_AUTH_TOKEN";
++const client = twilio(accountSid, authToken);
++
++async function createMessage() {
++  const message = await client.messages.create({
++    body: "This is the ship that made the Kessel Run in fourteen parsecs?",
++    from: "+1234567890",
++    to: "+1234567890",
++  });
++
++  console.log(message.body);
++}
++
++createMessage();
+\ No newline at end of file
