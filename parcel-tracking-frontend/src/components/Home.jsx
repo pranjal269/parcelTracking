@@ -10,9 +10,15 @@ const Home = () => {
       <div className="home-content">
         <div className="home-header">
           <div className="logo-section">
-            <div className="logo-icon">📦</div>
-            <h1>Smart Tracking</h1>
-            <p className="tagline">Your trusted parcel tracking solution</p>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '12px' }}>
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <div>
+              <h1>Smart Tracking</h1>
+              <p className="tagline">Your trusted parcel tracking solution</p>
+            </div>
           </div>
         </div>
 

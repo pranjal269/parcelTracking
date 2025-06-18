@@ -76,68 +76,61 @@ const CreateShipment = () => {
   };
 
   return (
-    <div className="modern-dashboard">
-      {/* Header Section */}
-      <div className="customer-header">
-        <div className="header-left">
-          <div className="logo-section">
-            <h1>📦 SmartTracking</h1>
-          </div>
-          <div className="user-info">
-            <span className="user-name">Welcome, {userName}!</span>
-            <span className="user-email">{userEmail}</span>
-          </div>
+    <div className="dashboard-container">
+      {/* Header Section - Simple design matching screenshot */}
+      <div className="customer-header-container">
+        <div className="logo-section">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '8px' }}>
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span className="logo-text">SmartTracking</span>
         </div>
-        <div className="header-actions">
+        
+        <div className="customer-welcome">Welcome, {userName || userEmail}</div>
+        
+        <div className="customer-actions">
           <button 
             onClick={() => navigate('/dashboard')}
-            className="modern-btn secondary"
+            className="track-button"
           >
             🏠 Dashboard
           </button>
           <button 
             onClick={() => navigate('/track-shipment')}
-            className="modern-btn secondary"
+            className="track-button"
           >
             🔍 Track Shipment
           </button>
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={handleLogout} className="logout-button">
             🚪 Logout
           </button>
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="dashboard-hero">
-        <div className="hero-content">
-          <h1>📦 Create New Shipment</h1>
-          <p>Fill in the details below to create a new shipment with tracking</p>
-        </div>
-      </div>
+      {/* Main Content */}
+      <div className="dashboard-content">
+        <h1 className="dashboard-title"> Create New Shipment</h1>
+        <p className="dashboard-subtitle">Fill in the details below to create a new shipment with tracking</p>
 
-      {/* Error Message */}
-      {error && (
-        <div className="modern-error">
-          <span>⚠️</span>
-          {error}
-        </div>
-      )}
+        {/* Error Message */}
+        {error && (
+          <div className="error-message">
+            <span>⚠️</span> {error}
+          </div>
+        )}
 
-      {/* Form Section */}
-      <div className="shipment-form-container">
-        <div className="form-card">
-          <div className="form-header">
+        {/* Two-column layout container */}
+        <div className="create-shipment-layout">
+          {/* Form Container - Left Column (Wider) */}
+          <div className="form-container shipment-form-column">
             <h2>Shipment Details</h2>
             <p>Please provide accurate information for successful delivery</p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="modern-form">
-            <div className="form-row">
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="recipientName">
-                  <span className="label-icon">👤</span>
-                  Recipient Name
-                </label>
+                <label htmlFor="recipientName">👤 Recipient Name</label>
                 <input
                   type="text"
                   id="recipientName"
@@ -146,17 +139,11 @@ const CreateShipment = () => {
                   onChange={handleChange}
                   required
                   placeholder="Enter recipient's full name"
-                  className="modern-input"
                 />
               </div>
-            </div>
-            
-            <div className="form-row">
+
               <div className="form-group">
-                <label htmlFor="recipientPhoneNumber">
-                  <span className="label-icon">📱</span>
-                  Recipient Phone Number
-                </label>
+                <label htmlFor="recipientPhoneNumber">📱 Recipient Phone Number</label>
                 <input
                   type="tel"
                   id="recipientPhoneNumber"
@@ -165,20 +152,12 @@ const CreateShipment = () => {
                   onChange={handleChange}
                   required
                   placeholder="Enter recipient's phone number (e.g., 9876543210)"
-                  className="modern-input"
                 />
-                <small className="form-hint">
-                  Phone number will be used for delivery OTP
-                </small>
+                <small>Phone number will be used for delivery OTP</small>
               </div>
-            </div>
-            
-            <div className="form-row">
+
               <div className="form-group">
-                <label htmlFor="deliveryAddress">
-                  <span className="label-icon">📍</span>
-                  Delivery Address
-                </label>
+                <label htmlFor="deliveryAddress">📍 Delivery Address</label>
                 <textarea
                   id="deliveryAddress"
                   name="deliveryAddress"
@@ -187,17 +166,11 @@ const CreateShipment = () => {
                   required
                   placeholder="Enter complete delivery address including street, city, state, and postal code"
                   rows="4"
-                  className="modern-textarea"
-                />
+                ></textarea>
               </div>
-            </div>
 
-            <div className="form-row">
               <div className="form-group">
-                <label htmlFor="weight">
-                  <span className="label-icon">⚖️</span>
-                  Weight (kg)
-                </label>
+                <label htmlFor="weight">⚖️ Weight (kg)</label>
                 <input
                   type="number"
                   id="weight"
@@ -209,24 +182,17 @@ const CreateShipment = () => {
                   max="1000"
                   step="0.01"
                   placeholder="0.01 - 1000 kg"
-                  className="modern-input"
                 />
-                <small className="form-hint">
-                  Weight must be between 0.01 kg and 1000 kg
-                </small>
+                <small>Weight must be between 0.01 kg and 1000 kg</small>
               </div>
 
               <div className="form-group">
-                <label htmlFor="packageType">
-                  <span className="label-icon">📦</span>
-                  Package Type
-                </label>
+                <label htmlFor="packageType"> Package Type</label>
                 <select
                   id="packageType"
                   name="packageType"
                   value={formData.packageType}
                   onChange={handleChange}
-                  className="modern-select"
                 >
                   <option value="">Select package type (optional)</option>
                   <option value="General">General</option>
@@ -239,14 +205,9 @@ const CreateShipment = () => {
                   <option value="Other">Other</option>
                 </select>
               </div>
-            </div>
 
-            <div className="form-row">
               <div className="form-group">
-                <label htmlFor="specialInstructions">
-                  <span className="label-icon">📝</span>
-                  Special Instructions
-                </label>
+                <label htmlFor="specialInstructions">📝 Special Instructions</label>
                 <textarea
                   id="specialInstructions"
                   name="specialInstructions"
@@ -254,72 +215,59 @@ const CreateShipment = () => {
                   onChange={handleChange}
                   placeholder="Any special handling instructions (optional)"
                   rows="3"
-                  className="modern-textarea"
-                />
+                ></textarea>
               </div>
-            </div>
 
-            <div className="form-actions">
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="modern-btn primary large"
-              >
-                {loading ? (
-                  <>
-                    <div className="btn-spinner"></div>
-                    Creating Shipment...
-                  </>
-                ) : (
-                  <>
-                    <span>🚚</span>
-                    Create Shipment
-                  </>
-                )}
-              </button>
-              <button 
-                type="button" 
-                onClick={() => navigate('/dashboard')}
-                className="modern-btn secondary large"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Info Card */}
-        <div className="info-card">
-          <div className="info-header">
-            <h3>🎯 What happens next?</h3>
+              <div className="form-actions">
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="create-button"
+                >
+                  {loading ? 'Creating Shipment...' : '🚚 Create Shipment'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => navigate('/dashboard')}
+                  className="track-button"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          <div className="info-content">
-            <div className="info-step">
-              <div className="step-icon">1️⃣</div>
-              <div className="step-text">
-                <h4>Tracking ID Generated</h4>
-                <p>A unique tracking ID will be created for this shipment</p>
+
+          {/* Info Section - Right Column */}
+          <div className="info-section what-happens-next-column">
+            <h3>🎯 What happens next?</h3>
+            <div className="info-steps">
+              <div className="info-step">
+                <span className="step-number">1</span>
+                <div className="step-content">
+                  <h4>Tracking ID Generated</h4>
+                  <p>A unique tracking ID will be created for this shipment</p>
+                </div>
               </div>
-            </div>
-            <div className="info-step">
-              <div className="step-icon">2️⃣</div>
-              <div className="step-text">
-                <h4>QR Code Created</h4>
-                <p>A scannable QR code containing shipment details</p>
+              <div className="info-step">
+                <span className="step-number">2</span>
+                <div className="step-content">
+                  <h4>QR Code Created</h4>
+                  <p>A scannable QR code containing shipment details</p>
+                </div>
               </div>
-            </div>
-            <div className="info-step">
-              <div className="step-icon">3️⃣</div>
-              <div className="step-text">
-                <h4>Notifications Sent</h4>
-                <p>Email and SMS alerts sent to you and recipient</p>
+              <div className="info-step">
+                <span className="step-number">3</span>
+                <div className="step-content">
+                  <h4>Notifications Sent</h4>
+                  <p>Email and SMS alerts sent to you and recipient</p>
+                </div>
               </div>
-            </div>
-            <div className="info-step">
-              <div className="step-icon">4️⃣</div>
-              <div className="step-text">
-                <h4>Ready to Track</h4>
-                <p>Monitor status and generate delivery OTP when ready</p>
+              <div className="info-step">
+                <span className="step-number">4</span>
+                <div className="step-content">
+                  <h4>Ready to Track</h4>
+                  <p>Monitor status and generate delivery OTP when ready</p>
+                </div>
               </div>
             </div>
           </div>

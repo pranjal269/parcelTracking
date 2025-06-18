@@ -52,9 +52,9 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="modern-dashboard">
-        <div className="loading-container">
-          <div className="modern-spinner"></div>
+      <div className="dashboard-container">
+        <div className="loading">
+          <div className="spinner"></div>
           <p>Loading your shipments...</p>
         </div>
       </div>
@@ -62,134 +62,120 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="modern-dashboard">
-      {/* Header Section */}
-      <div className="customer-header">
-        <div className="header-left">
-          <div className="logo-section">
-            <h1>📦 SmartTracking</h1>
-          </div>
-          <div className="user-info">
-            <span className="user-name">Welcome, {userName}!</span>
-            <span className="user-email">{userEmail}</span>
-          </div>
+    <div className="dashboard-container">
+      {/* Header Section - Simple design matching screenshot */}
+      <div className="customer-header-container">
+        <div className="logo-section">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '8px' }}>
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span className="logo-text">SmartTracking</span>
         </div>
-        <div className="header-actions">
+        
+        <div className="customer-welcome">Welcome, {userName || userEmail}</div>
+        
+        <div className="customer-actions">
           <button 
             onClick={() => navigate('/track-shipment')}
-            className="modern-btn secondary"
+            className="track-button"
           >
             🔍 Track Shipment
           </button>
           <button 
             onClick={() => navigate('/create-shipment')}
-            className="modern-btn primary"
+            className="create-button"
           >
-            📦 Create Shipment
+             Create Shipment
           </button>
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={handleLogout} className="logout-button">
             🚪 Logout
           </button>
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="dashboard-hero">
-        <div className="hero-content">
-          <h1>Your Dashboard</h1>
-          <p>Manage and track all your shipments in one place</p>
-        </div>
-        <div className="hero-stats">
-          <div className="stat-item">
-            <div className="stat-number">{shipments.length}</div>
-            <div className="stat-label">Total Shipments</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{shipments.filter(s => s.status === 'Pending').length}</div>
-            <div className="stat-label">Pending</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{shipments.filter(s => s.status === 'In Transit').length}</div>
-            <div className="stat-label">In Transit</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{shipments.filter(s => s.status === 'Delivered').length}</div>
-            <div className="stat-label">Delivered</div>
-          </div>
-        </div>
-      </div>
+      {/* Dashboard Content */}
+      <div className="dashboard-content">
+        <h1 className="dashboard-title">Your Dashboard</h1>
+        <p className="dashboard-subtitle">Manage and track all your shipments in one place</p>
 
-      {/* Error Message */}
-      {error && (
-        <div className="modern-error">
-          <span>⚠️</span>
-          {error}
+        {/* Stats Cards */}
+        <div className="customer-stats">
+          <div className="customer-stat-item">
+            <p className="stat-title">Total Shipments</p>
+            <p className="stat-value">{shipments.length}</p>
+          </div>
+          <div className="customer-stat-item">
+            <p className="stat-title">Pending</p>
+            <p className="stat-value">{shipments.filter(s => s.status === 'Pending').length}</p>
+          </div>
+          <div className="customer-stat-item">
+            <p className="stat-title">In Transit</p>
+            <p className="stat-value">{shipments.filter(s => s.status === 'In Transit').length}</p>
+          </div>
+          <div className="customer-stat-item">
+            <p className="stat-title">Delivered</p>
+            <p className="stat-value">{shipments.filter(s => s.status.includes('Delivered')).length}</p>
+          </div>
         </div>
-      )}
 
-      {/* Shipments Section */}
-      {shipments.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📦</div>
-          <h3>No Shipments Yet</h3>
-          <p>You haven't created any shipments yet. Start by creating your first shipment!</p>
-          <button 
-            onClick={() => navigate('/create-shipment')}
-            className="modern-btn primary"
-          >
-            Create Your First Shipment
-          </button>
-        </div>
-      ) : (
-        <div className="shipments-section">
-          <div className="section-header">
-            <h2>Your Shipments</h2>
-            <div className="header-actions">
+        {/* Error Message */}
+        {error && (
+          <div className="error-message">
+            <span>⚠️</span> {error}
+          </div>
+        )}
+
+        {/* Shipments Section */}
+        <div className="customer-shipments">
+          <h2 className="customer-shipments-title">Your Shipments</h2>
+          
+          {shipments.length === 0 ? (
+            <div className="no-shipments">
+              <p>You haven't created any shipments yet. Start by creating your first shipment!</p>
               <button 
-                onClick={() => navigate('/track-shipment')}
-                className="modern-btn secondary"
+                onClick={() => navigate('/create-shipment')}
+                className="create-button"
+                style={{ marginTop: '15px' }}
               >
-                Track Any Shipment
+                Create Your First Shipment
               </button>
             </div>
-          </div>
-
-          <div className="shipments-grid">
-            {shipments.map((shipment) => (
-              <div key={shipment.id} className="shipment-card">
-                <div className="card-header">
-                  <div className="tracking-info">
-                    <h4>{shipment.trackingId}</h4>
-                    <span className={`status-badge ${shipment.status.toLowerCase().replace(' ', '-')}`}>
-                      {shipment.status}
+          ) : (
+            <div className="shipment-card-container">
+              {shipments.map((shipment) => (
+                <div key={shipment.id} className="customer-shipment-card">
+                  <h3 className="shipment-tracking-id">{shipment.trackingId}</h3>
+                  
+                  <div className="shipment-status-container">
+                    <span className={`shipment-status ${shipment.status.toLowerCase().replace('_', '-')}`}>
+                      {shipment.status === 'Delivered_Tampered' ? 'DELIVERED (TAMPERED)' : shipment.status.toUpperCase()}
                     </span>
                   </div>
-                  <div className="card-id">#{shipment.id}</div>
-                </div>
-
-                <div className="card-content">
-                  <div className="recipient-info">
-                    <div className="info-item">
-                      <span className="label">👤 Recipient:</span>
-                      <span className="value">{shipment.recipientName}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="label">📅 Created:</span>
-                      <span className="value">{new Date(shipment.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="label">📍 Address:</span>
-                      <span className="value">{shipment.deliveryAddress}</span>
-                    </div>
+                  
+                  <div className="shipment-info-item">
+                    <span className="info-icon">👤</span>
+                    <span><strong>Recipient:</strong> {shipment.recipientName}</span>
+                  </div>
+                  
+                  <div className="shipment-info-item">
+                    <span className="info-icon">📅</span>
+                    <span><strong>Created:</strong> {new Date(shipment.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  
+                  <div className="shipment-info-item">
+                    <span className="info-icon">📍</span>
+                    <span><strong>Address:</strong> {shipment.deliveryAddress}</span>
                   </div>
 
                   {shipment.qrCodeImage && (
-                    <div className="qr-section">
-                      <h5>QR Code</h5>
+                    <div className="qr-code-section">
+                      <p className="qr-code-title">QR Code</p>
                       <img 
                         src={`data:image/png;base64,${shipment.qrCodeImage}`}
                         alt="QR Code"
-                        className="qr-code"
+                        className="qr-code-image"
                         onClick={() => {
                           const newWindow = window.open();
                           newWindow.document.write(`
@@ -204,56 +190,33 @@ const Dashboard = () => {
                       />
                     </div>
                   )}
-                </div>
 
-                <div className="card-actions">
-                  {!shipment.status.includes('Delivered') ? (
-                    <button
-                      onClick={() => handleDeliverOtp(shipment.id)}
-                      className="modern-btn primary"
-                    >
-                      🔍 Track Package
-                    </button>
-                  ) : shipment.status === 'Delivered_Tampered' ? (
-                    <div className="delivered-badge tampered">
-                      ⚠️ Delivered (Tampered)
-                    </div>
-                  ) : (
-                    <div className="delivered-badge">
-                      ✅ Delivered
-                    </div>
-                  )}
+                  <div className="shipment-actions" style={{ marginTop: '10px' }}>
+                    {shipment.status === 'Delivered' && (
+                      <div className="shipment-footer">
+                        <span className="shipment-delivered-tag">✅ Delivered</span>
+                      </div>
+                    )}
+                    
+                    {shipment.status === 'Delivered_Tampered' && (
+                      <div className="shipment-footer">
+                        <span className="shipment-delivered-tag tampered">⚠️ Delivered (Tampered)</span>
+                      </div>
+                    )}
+                    
+                    {!shipment.status.includes('Delivered') && (
+                      <button
+                        onClick={() => handleDeliverOtp(shipment.id)}
+                        className="track-button"
+                      >
+                        🔍 Track Package
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="quick-actions">
-        <h3>Quick Actions</h3>
-        <div className="actions-grid">
-          <button 
-            onClick={() => navigate('/create-shipment')}
-            className="action-card"
-          >
-            <div className="action-icon">📦</div>
-            <div className="action-text">
-              <h4>Create Shipment</h4>
-              <p>Send a new package</p>
+              ))}
             </div>
-          </button>
-          <button 
-            onClick={() => navigate('/track-shipment')}
-            className="action-card"
-          >
-            <div className="action-icon">🔍</div>
-            <div className="action-text">
-              <h4>Track Shipment</h4>
-              <p>Find any package</p>
-            </div>
-          </button>
+          )}
         </div>
       </div>
     </div>
