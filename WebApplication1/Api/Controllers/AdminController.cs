@@ -28,7 +28,7 @@ namespace WebApplication1.Api.Controllers
                 .FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
 
             // Check if user exists, verify password hash, and check admin role
-            if (user == null || !_passwordHashingService.VerifyPassword(loginRequest.Password, user.Password) || user.Role != "admin")
+            if (user == null || !_passwordHashingService.VerifyPassword(loginRequest.Password, user.Password) || user.Role != "Admin")
             {
                 return Unauthorized("Invalid credentials or insufficient permissions");
             }
